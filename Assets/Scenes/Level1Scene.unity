@@ -470,6 +470,7 @@ GameObject:
   - component: {fileID: 1174859450}
   - component: {fileID: 1174859449}
   - component: {fileID: 1174859452}
+  - component: {fileID: 1174859453}
   m_Layer: 0
   m_Name: Ghost
   m_TagString: Enemy
@@ -578,6 +579,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 388a08996ca457c4ea5374742e098dad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ghostAnimator: {fileID: 1174859453}
+  idleAnimation: {fileID: 7400000, guid: b5706ecbd9864de4585a13eddbf95303, type: 2}
+  stunAnimation: {fileID: 7400000, guid: 85a8b3c0a37e35f4e9cafcb30d1c411d, type: 2}
+--- !u!95 &1174859453
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1174859448}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 3396a046c97e60f419a9bb1a9660a122, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &1328824760
 GameObject:
   m_ObjectHideFlags: 0

@@ -64,7 +64,7 @@ public class Player : MonoBehaviour
 
     private void ValidateRoar()
     {
-        if (Input.GetKeyDown(KeyCode.C) && actionState.GetCurrentState() != moving)
+        if (Input.GetKeyDown(KeyCode.C))
         {
             actionState.ChangeState(roar);
             //playerAnim.SetTrigger("roar");
