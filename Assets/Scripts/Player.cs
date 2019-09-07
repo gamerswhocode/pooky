@@ -11,13 +11,13 @@ public class Player : MonoBehaviour
     StateMachine movementState;
 
 
-
+    public Direction direction = Direction.Right;
 
     Idle idle;
     public AnimationClip idleAnimation;
     Roar roar;
     public AnimationClip roarAnimation;
-    
+
 
     Moving moving;
     public AnimationClip movingAnimation;
@@ -29,7 +29,7 @@ public class Player : MonoBehaviour
     [SerializeField]
     private float jumpForce;
     private Rigidbody2D playerRigidbody;
-    bool isGrounded=false;
+    bool isGrounded = false;
     public bool isRoaring = false;
 
 
@@ -79,8 +79,8 @@ public class Player : MonoBehaviour
 
     void ValidateSwitchToIdle()
     {
-        if (actionState.GetCurrentState() != idle &&  
-            !Input.anyKey && 
+        if (actionState.GetCurrentState() != idle &&
+            !Input.anyKey &&
             actionState.GetCurrentState() != roar)
         {
             actionState.ChangeState(idle);
@@ -94,19 +94,38 @@ public class Player : MonoBehaviour
 
         if (actionState.GetCurrentState() != roar)
         {
+            if (Input.GetKey(KeyCode.RightArrow) && (direction == Direction.Left) || (Input.GetKey(KeyCode.LeftArrow)  && (direction == Direction.Right)))
+            {
+                transform.RotateAround(this.transform.position, Vector3.up, 180f);
+            }
+
 
             if (Input.GetKey(KeyCode.LeftArrow))
             {
+                //transform.localScale = new Vector3(transform.localScale.x, 180f, transform.localScale.z);
+                //if (direction == Direction.Right)
+                //{
+                    
+                //    transform.Rotate(new Vector3(0, 180f, 0));
+                //}
+                //direction = Direction.Left;
 
-                transform.Translate(Vector2.left * speed * Time.deltaTime);
+                transform.Translate(Vector2.right * speed * Time.deltaTime);
                 Debug.Log("moving left");
                 if (actionState.GetCurrentState() != moving)
                     actionState.ChangeState(moving);
             }
             else if (Input.GetKey(KeyCode.RightArrow))
             {
+            //    if (direction == Direction.Left)
+            //    {
+            //        transform.Rotate(new Vector3(0, 0, 0));
+            //    }
+            //    direction = Direction.Right;
 
                 transform.Translate(Vector2.right * speed * Time.deltaTime);
+                //transform.localScale = new Vector3(transform.localScale.x, 0f, transform.localScale.z);
+
                 Debug.Log("moving right");
                 if (actionState.GetCurrentState() != moving)
                     actionState.ChangeState(moving);
@@ -119,12 +138,14 @@ public class Player : MonoBehaviour
                 isGrounded = false;
             }
         }
-        
+
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
+
+        direction = gameObject.transform.eulerAngles.y == 0 ? Direction.Right : Direction.Left;
         actionState.FixedExecuteState();
         ValidateMovement();
         ValidateSwitchToIdle();
