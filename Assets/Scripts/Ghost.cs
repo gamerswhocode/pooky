@@ -31,6 +31,7 @@ public class Ghost : MonoBehaviour
     void Update()
     {
         ghostState.ExecuteState();
+        Debug.Log(ghostState.GetCurrentState());
     }
 
     void returnStunMethod()
@@ -43,10 +44,14 @@ public class Ghost : MonoBehaviour
         if (collision.gameObject.CompareTag("Attack"))
         {
             ghostState.ChangeState(ghostStuntState);
-        }else if (collision.gameObject.CompareTag("Player"))
+        }else if (collision.gameObject.CompareTag("Player") && ghostState.GetCurrentState() != ghostStuntState)
         {
-            Destroy(collision.gameObject);
-            SceneManager.LoadScene(0);
+            var player = collision.gameObject.GetComponent<Player>();
+            player.killPlayer();
+        }
+        else if (collision.gameObject.CompareTag("Bite")&&ghostState.GetCurrentState()==ghostStuntState)
+        {
+            Destroy(gameObject);
         }
 
     }

@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+
 
 public class Player : MonoBehaviour
 {
@@ -17,6 +19,10 @@ public class Player : MonoBehaviour
     public AnimationClip idleAnimation;
     Roar roar;
     public AnimationClip roarAnimation;
+    Death death;
+    public AnimationClip deathAnimation;
+    Bite bite;
+    public AnimationClip biteAnimation;
 
 
     Moving moving;
@@ -38,6 +44,8 @@ public class Player : MonoBehaviour
         idle = new Idle(playerAnim, idleAnimation);
         moving = new Moving(playerAnim, movingAnimation);
         roar = new Roar(playerAnim, roarAnimation, ReturnFromRoarLogic);
+        death = new Death(playerAnim, deathAnimation, returnDeathAnimation,transform );
+        bite = new Bite(playerAnim, biteAnimation, ReturnFromRoarLogic);
     }
 
 
@@ -59,7 +67,6 @@ public class Player : MonoBehaviour
     {
         actionState.ExecuteState();
         ValidateRoar();
-        Debug.Log(actionState.GetCurrentState());
     }
 
     private void ValidateRoar()
@@ -81,7 +88,7 @@ public class Player : MonoBehaviour
     {
         if (actionState.GetCurrentState() != idle &&
             !Input.anyKey &&
-            actionState.GetCurrentState() != roar)
+            actionState.GetCurrentState() != roar && actionState.GetCurrentState() != death)
         {
             actionState.ChangeState(idle);
         }
@@ -91,47 +98,32 @@ public class Player : MonoBehaviour
     {
         float position = transform.position.x; // y = 1.5
 
-
-        if (actionState.GetCurrentState() != roar)
+        var PlayerState = actionState.GetCurrentState();
+        if (PlayerState != roar && PlayerState != death && PlayerState != bite)
         {
             if (Input.GetKey(KeyCode.RightArrow) && (direction == Direction.Left) || (Input.GetKey(KeyCode.LeftArrow)  && (direction == Direction.Right)))
             {
                 transform.RotateAround(this.transform.position, Vector3.up, 180f);
             }
 
-
+            #region Move
             if (Input.GetKey(KeyCode.LeftArrow))
             {
-                //transform.localScale = new Vector3(transform.localScale.x, 180f, transform.localScale.z);
-                //if (direction == Direction.Right)
-                //{
-                    
-                //    transform.Rotate(new Vector3(0, 180f, 0));
-                //}
-                //direction = Direction.Left;
-
                 transform.Translate(Vector2.right * speed * Time.deltaTime);
-                Debug.Log("moving left");
                 if (actionState.GetCurrentState() != moving)
                     actionState.ChangeState(moving);
             }
             else if (Input.GetKey(KeyCode.RightArrow))
             {
-            //    if (direction == Direction.Left)
-            //    {
-            //        transform.Rotate(new Vector3(0, 0, 0));
-            //    }
-            //    direction = Direction.Right;
-
                 transform.Translate(Vector2.right * speed * Time.deltaTime);
-                //transform.localScale = new Vector3(transform.localScale.x, 0f, transform.localScale.z);
-
-                Debug.Log("moving right");
                 if (actionState.GetCurrentState() != moving)
                     actionState.ChangeState(moving);
             }
-
-
+            #endregion
+            if (Input.GetKeyDown(KeyCode.V))
+            {
+                actionState.ChangeState(bite);
+            }
             if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
             {
                 playerRigidbody.AddForce(Vector2.up * jumpForce);
@@ -161,8 +153,21 @@ public class Player : MonoBehaviour
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        Debug.Log("collision " + collision.gameObject.tag);
         if (collision.gameObject.CompareTag("Floor"))
             isGrounded = true;
     }
+
+    public void killPlayer()
+    {
+        if (actionState.GetCurrentState() != death)
+        {
+            actionState.ChangeState(death);
+        }
+    }
+    void returnDeathAnimation()
+    {
+        Destroy(this);
+        SceneManager.LoadScene(0);
+    }
+
 }
