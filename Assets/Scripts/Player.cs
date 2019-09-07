@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
+    public Element element;
     public GameObject roarHitBox;
     public Animator playerAnim;
 
@@ -24,11 +25,14 @@ public class Player : MonoBehaviour
     Bite bite;
     public AnimationClip biteAnimation;
 
+    public AnimationClip jumpAnimation;
 
     Moving moving;
     public AnimationClip movingAnimation;
 
 
+    [SerializeField]
+    int Health;
 
     [SerializeField]
     private float speed;
@@ -110,13 +114,13 @@ public class Player : MonoBehaviour
             if (Input.GetKey(KeyCode.LeftArrow))
             {
                 transform.Translate(Vector2.right * speed * Time.deltaTime);
-                if (actionState.GetCurrentState() != moving)
+                if (actionState.GetCurrentState() != moving && isGrounded)
                     actionState.ChangeState(moving);
             }
             else if (Input.GetKey(KeyCode.RightArrow))
             {
                 transform.Translate(Vector2.right * speed * Time.deltaTime);
-                if (actionState.GetCurrentState() != moving)
+                if (actionState.GetCurrentState() != moving && isGrounded)
                     actionState.ChangeState(moving);
             }
             #endregion
@@ -126,6 +130,7 @@ public class Player : MonoBehaviour
             }
             if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
             {
+                playerAnim.Play(jumpAnimation.name, -1, 0f);
                 playerRigidbody.AddForce(Vector2.up * jumpForce);
                 isGrounded = false;
             }
@@ -154,14 +159,24 @@ public class Player : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Floor"))
+        {
             isGrounded = true;
+            actionState.ChangeState(idle);
+        }
     }
 
     public void killPlayer()
     {
-        if (actionState.GetCurrentState() != death)
+        Health--;
+        if (Health == 0) {
+            if (actionState.GetCurrentState() != death)
+            {
+                actionState.ChangeState(death);
+            }
+        }
+        else
         {
-            actionState.ChangeState(death);
+
         }
     }
     void returnDeathAnimation()
@@ -170,4 +185,8 @@ public class Player : MonoBehaviour
         SceneManager.LoadScene(0);
     }
 
+    public void setElement(Element pElement)
+    {
+        element = pElement;
+    }
 }

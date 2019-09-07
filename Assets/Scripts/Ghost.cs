@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 public class Ghost : MonoBehaviour
 {
+    public Element element;
 
     public Animator ghostAnimator;
     StateMachine ghostState;
@@ -49,8 +50,10 @@ public class Ghost : MonoBehaviour
             var player = collision.gameObject.GetComponent<Player>();
             player.killPlayer();
         }
-        else if (collision.gameObject.CompareTag("Bite")&&ghostState.GetCurrentState()==ghostStuntState)
+        else if (collision.gameObject.CompareTag("Bite")&& ghostState.GetCurrentState()==ghostStuntState)
         {
+            var player = collision.gameObject.GetComponentInParent<Player>();
+            player.setElement(element);
             Destroy(gameObject);
         }
 
