@@ -182,7 +182,7 @@ public class Player : MonoBehaviour
     void returnDeathAnimation()
     {
         Destroy(this);
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene(1);
     }
 
     public void setElement(Element pElement)
