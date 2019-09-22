@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 
 public class Player : MonoBehaviour
@@ -35,6 +36,11 @@ public class Player : MonoBehaviour
     int Health;
 
     [SerializeField]
+    Image[] Hearts;
+
+    
+
+    [SerializeField]
     private float speed;
     [SerializeField]
     private float jumpForce;
@@ -45,11 +51,13 @@ public class Player : MonoBehaviour
 
     private void Awake()
     {
+        float offset = 20;
         idle = new Idle(playerAnim, idleAnimation);
         moving = new Moving(playerAnim, movingAnimation);
         roar = new Roar(playerAnim, roarAnimation, ReturnFromRoarLogic);
         death = new Death(playerAnim, deathAnimation, returnDeathAnimation,transform );
         bite = new Bite(playerAnim, biteAnimation, ReturnFromRoarLogic);
+        
     }
 
 
@@ -188,5 +196,10 @@ public class Player : MonoBehaviour
     public void setElement(Element pElement)
     {
         element = pElement;
+    }
+
+    public Element getElement()
+    {
+        return element;
     }
 }
