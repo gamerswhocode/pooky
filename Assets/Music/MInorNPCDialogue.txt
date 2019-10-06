@@ -1,0 +1,38 @@
+Minor NPC Dialogue
+1.- "Hey, so... I'd like a very sour drink please, not so loaded. Let's save the drunken frenzy for later." 
+1a.- "This is great! Exactly what I wanted!"
+1b.- "Good, unexpected, but good."
+1c.- "Ugh what? This is definitely NOT what I wanted. Just... Just take it away."
+2.- "Hmm, make it sweet this time please, I'm feeling nostalgic."
+2a.- "Aw man, this takes me back... I wonder where he is right now, he didn't seem to be doing that great last time I saw him..."
+2b.- "Thanks, I was thinking this would be a bit sweeter but it's fine."
+2c.- "And the feeling's gone, thanks a lot."
+3.- "I really don't know what to order now... This feeling's been stuck with me ever since the last time I was here. Maybe something that tingles the senses, you know?"
+3a.- "This! This is it! I feel like it's filled me with a sort of mysterious strength, you know? I need to face them and tell them that they're wrong and that they can still turn everything around. It's never too late!"
+[He's incredibly drunk and doing fist pumps] 
+3b.- "Ah, good enough, just thought that maybe I wanted something a little stronger you know?."
+3c.- "You know, this is exactly what I ordered... if I'd asked for something that makes me feel like crap after a trip down memory lane. Yeah, no thanks."
+Flavor text for each successful section:
+1) (These can be in any order and in any section, i.e. generic flavor text)
+a. "You know, this place looks a lot better on the inside than what I first thought, kinda run down, but home-y you know what I mean? I could see myself coming a few times a week."
+b. "The drinks here are good, did you take a bar-tending course at some school or did you learn by example? Maybe a mentor? In any case, compliments to whoever taught you, keep it up!"
+c. "I think it's about time to go home, I'll be back some other day. Gotta work tomorrow... Or do I?"
+2) (The first two paragraphs must be in order)
+a. "It feels like it's been a while. This drink you gave me reminds me of something I used to drink with a friend back in my hometown, you know? And that got me thinking about them... How they're doing and all that. Last I knew about them I... Well..."
+b. "...Hmm? Oh, sorry, they just weren't in the greatest place in every sense of the word, I just wish there was some way I could help them out, y'know? Kinda how this drink made me remember and think about these things..."
+c. "Well, keep 'em coming, I need some more booze in my system if I'm going to keep the night going!"
+d. "This place is great, I'm loving it more every time I walk in."
+3) (The first four paragraphs must be in order)
+a. "You know, I've been thinking, I think they really just doesn't have anybody to talk to... Do you think it'd be a good idea to bring them over and talk it over a drink, maybe some dinner or something? I don't want to impose but, I just can't leave them alone!"
+[Presented with a choice: yes, no, remain silent]
+yes-b. "Great! I know that a good drink and good company can be the cure to those bottling feelings up for a long time, I hope you get to meet them when they come over!"
+no-b. "Yeah, maybe you're right, I think I'm being a bit too pushy, maybe cracking them open isn't what I'm supposed to do right now... Thanks either way."
+silence-b. "I shouldn't be asking a total stranger should I? Sorry about that, it's not your decision to make, I guess I'm just being insecure an pushing my responsibilities onto someone else. I'm the one who should make the decision."
+c. "I really need to go now, but before I do, how about the first drink you gave me? Just... Turn the alcohol dial up to 11, I'm going to need the extra courage."
+critical-d. "Amazing! You remembered! It's good to see that you remember lots of the faces that walk into your place, great sign that you actually care about your customers."
+good-d. "This isn't exactly what I got the first time, but you know, trying new things is great too."
+bad-d. "Well... What can I say, it's probably hard to remember everything that some random person ordered."
+e. "Thanks for listening, and for the service, how do you even manage to keep all these guys happy? Being a bartender must be something else."
+f. "I feel great now. I leave a new person tonight! Hahaha!"
+g. "Told ya I'd bring my friends!"
+

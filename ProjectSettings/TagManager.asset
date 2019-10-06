@@ -9,6 +9,7 @@ TagManager:
   - Attack
   - Bite
   - Candle
+  - Key
   layers:
   - Default
   - TransparentFX

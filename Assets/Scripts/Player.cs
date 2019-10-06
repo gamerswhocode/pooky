@@ -14,6 +14,13 @@ public class Player : MonoBehaviour
     StateMachine actionState;
     StateMachine movementState;
 
+    SpriteRenderer sr;
+
+
+    [SerializeField]
+    bool isInvulnerable;
+    
+    public bool playerHasKey;
 
     public Direction direction = Direction.Right;
 
@@ -38,7 +45,13 @@ public class Player : MonoBehaviour
     [SerializeField]
     Image[] Hearts;
 
-    
+
+    [SerializeField]
+    Color fire;
+    [SerializeField]
+    Color ice;
+    [SerializeField]
+    Color water;
 
     [SerializeField]
     private float speed;
@@ -48,6 +61,15 @@ public class Player : MonoBehaviour
     bool isGrounded = false;
     public bool isRoaring = false;
 
+    #region AudioStuff
+    AudioSource audioSource;
+    [SerializeField]
+    AudioClip jumpAudio;
+    [SerializeField]
+    AudioClip takeHitAudio;
+    [SerializeField]
+    AudioClip deathAudio;
+    #endregion
 
     private void Awake()
     {
@@ -57,6 +79,11 @@ public class Player : MonoBehaviour
         roar = new Roar(playerAnim, roarAnimation, ReturnFromRoarLogic);
         death = new Death(playerAnim, deathAnimation, returnDeathAnimation,transform );
         bite = new Bite(playerAnim, biteAnimation, ReturnFromRoarLogic);
+        isInvulnerable = false;
+        playerHasKey = false;
+        audioSource = GetComponent<AudioSource>();
+
+
         
     }
 
@@ -94,6 +121,7 @@ public class Player : MonoBehaviour
     void ReturnFromRoarLogic()
     {
         actionState.ChangeState(idle);
+        setElement(Element.None);
     }
 
     void ValidateSwitchToIdle()
@@ -141,6 +169,7 @@ public class Player : MonoBehaviour
                 playerAnim.Play(jumpAnimation.name, -1, 0f);
                 playerRigidbody.AddForce(Vector2.up * jumpForce);
                 isGrounded = false;
+                audioSource.PlayOneShot(jumpAudio);
             }
         }
 
@@ -158,33 +187,41 @@ public class Player : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        //Debug.Log("collision" + collision.tag);
-        //if (collision.gameObject.CompareTag("Enemy"))
-        //{
-        //    Destroy(gameObject);
-        //}
+        if (collision.gameObject.CompareTag("Key"))
+        {
+            playerHasKey = true;
+            Destroy(collision.gameObject);
+        }
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Floor"))
         {
             isGrounded = true;
-            actionState.ChangeState(idle);
+            if(actionState.GetCurrentState() != death)
+                actionState.ChangeState(idle);
         }
     }
 
-    public void killPlayer()
+    public void killPlayer(int totalDamage)
     {
-        Health--;
-        if (Health == 0) {
-            if (actionState.GetCurrentState() != death)
-            {
-                actionState.ChangeState(death);
-            }
-        }
-        else
+        if (!isInvulnerable)
         {
-
+            Health -= totalDamage;
+            if (Health <= 0)
+            {
+                if (actionState.GetCurrentState() != death)
+                {
+                    audioSource.PlayOneShot(deathAudio);
+                    actionState.ChangeState(death);
+                }
+            }
+            else
+            {
+                isInvulnerable = true;
+                StartCoroutine("Fade");
+                audioSource.PlayOneShot(takeHitAudio);
+            }
         }
     }
     void returnDeathAnimation()
@@ -196,10 +233,35 @@ public class Player : MonoBehaviour
     public void setElement(Element pElement)
     {
         element = pElement;
+
+        sr = GetComponent<SpriteRenderer>();
+
+        switch (element)
+        {
+            case Element.Fire:
+                sr.color = fire;
+                break;
+            case Element.Ice:
+                sr.color = ice;
+                break;
+            case Element.Water:
+                sr.color = water;
+                break;
+            default:
+                sr.color = Color.white;
+                break;
+        }
+
     }
 
     public Element getElement()
     {
         return element;
+    }
+
+    IEnumerator Fade()
+    {
+            yield return new WaitForSeconds(1);
+            isInvulnerable = false;
     }
 }

@@ -73,7 +73,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 7d0252e1100c8d542aed40ef9f2af327, type: 3}
-  m_Color: {r: 0, g: 0.9858155, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -125,6 +125,7 @@ MonoBehaviour:
   ghostAnimator: {fileID: 100597660668844354}
   idleAnimation: {fileID: 7400000, guid: b5706ecbd9864de4585a13eddbf95303, type: 2}
   stunAnimation: {fileID: 7400000, guid: 85a8b3c0a37e35f4e9cafcb30d1c411d, type: 2}
+  respawnTimer: 2
 --- !u!95 &100597660668844354
 Animator:
   serializedVersion: 3
