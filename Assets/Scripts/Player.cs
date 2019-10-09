@@ -58,6 +58,8 @@ public class Player : MonoBehaviour
     [SerializeField]
     private float jumpForce;
     private Rigidbody2D playerRigidbody;
+
+    [SerializeField]
     bool isGrounded = false;
     public bool isRoaring = false;
 
@@ -73,18 +75,14 @@ public class Player : MonoBehaviour
 
     private void Awake()
     {
-        float offset = 20;
         idle = new Idle(playerAnim, idleAnimation);
         moving = new Moving(playerAnim, movingAnimation);
         roar = new Roar(playerAnim, roarAnimation, ReturnFromRoarLogic);
         death = new Death(playerAnim, deathAnimation, returnDeathAnimation,transform );
-        bite = new Bite(playerAnim, biteAnimation, ReturnFromRoarLogic);
+        bite = new Bite(playerAnim, biteAnimation, ReturnFromBiteLogic);
         isInvulnerable = false;
         playerHasKey = false;
         audioSource = GetComponent<AudioSource>();
-
-
-        
     }
 
 
@@ -97,24 +95,47 @@ public class Player : MonoBehaviour
         playerRigidbody = GetComponent<Rigidbody2D>();
     }
 
-    public void ToggleRoar()
-    {
-        //isRoaring = !isRoaring;
-    }
-
     private void Update()
     {
+        
+        ValidateInupt();
+        ValidateSwitchToIdle();
         actionState.ExecuteState();
-        ValidateRoar();
+        Debug.Log(isGrounded);
+        Debug.Log(actionState.GetCurrentState());
     }
 
-    private void ValidateRoar()
+    void ValidateInupt()
     {
-        if (Input.GetKeyDown(KeyCode.C))
+
+        if (PlayerCanAct())
         {
-            actionState.ChangeState(roar);
-            //playerAnim.SetTrigger("roar");
+            if (Input.GetKeyDown(KeyCode.V))
+            {
+                actionState.ChangeState(bite);
+            }
+            else if (Input.GetKeyDown(KeyCode.C))
+            {
+                actionState.ChangeState(roar);
+            }
+
+            if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+            {
+                Debug.Log("do the jump");
+                playerAnim.Play(jumpAnimation.name, -1, 0f);
+                playerRigidbody.AddForce(Vector2.up * jumpForce);
+                isGrounded = false;
+                audioSource.PlayOneShot(jumpAudio);
+            }
         }
+    }
+
+    private bool PlayerCanAct()
+    {
+        IState currentState = actionState.GetCurrentState();
+        return currentState != roar &&
+            currentState != bite &&
+            currentState != death;
     }
 
 
@@ -124,11 +145,16 @@ public class Player : MonoBehaviour
         setElement(Element.None);
     }
 
+    void ReturnFromBiteLogic()
+    {
+        actionState.ChangeState(idle);
+    }
+
     void ValidateSwitchToIdle()
     {
         if (actionState.GetCurrentState() != idle &&
             !Input.anyKey &&
-            actionState.GetCurrentState() != roar && actionState.GetCurrentState() != death)
+            actionState.GetCurrentState() != roar && actionState.GetCurrentState() != death && actionState.GetCurrentState() != bite)
         {
             actionState.ChangeState(idle);
         }
@@ -136,9 +162,9 @@ public class Player : MonoBehaviour
 
     private void ValidateMovement()
     {
-        float position = transform.position.x; // y = 1.5
+        float position = transform.position.x;
 
-        var PlayerState = actionState.GetCurrentState();
+        IState PlayerState = actionState.GetCurrentState();
         if (PlayerState != roar && PlayerState != death && PlayerState != bite)
         {
             if (Input.GetKey(KeyCode.RightArrow) && (direction == Direction.Left) || (Input.GetKey(KeyCode.LeftArrow)  && (direction == Direction.Right)))
@@ -160,17 +186,6 @@ public class Player : MonoBehaviour
                     actionState.ChangeState(moving);
             }
             #endregion
-            if (Input.GetKeyDown(KeyCode.V))
-            {
-                actionState.ChangeState(bite);
-            }
-            if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
-            {
-                playerAnim.Play(jumpAnimation.name, -1, 0f);
-                playerRigidbody.AddForce(Vector2.up * jumpForce);
-                isGrounded = false;
-                audioSource.PlayOneShot(jumpAudio);
-            }
         }
 
     }
@@ -182,7 +197,7 @@ public class Player : MonoBehaviour
         direction = gameObject.transform.eulerAngles.y == 0 ? Direction.Right : Direction.Left;
         actionState.FixedExecuteState();
         ValidateMovement();
-        ValidateSwitchToIdle();
+        
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -205,22 +220,33 @@ public class Player : MonoBehaviour
 
     public void killPlayer(int totalDamage)
     {
-        if (!isInvulnerable)
+        if (totalDamage < 10)
         {
-            Health -= totalDamage;
-            if (Health <= 0)
+            if (!isInvulnerable)
             {
-                if (actionState.GetCurrentState() != death)
+                Health -= totalDamage;
+                if (Health <= 0)
                 {
-                    audioSource.PlayOneShot(deathAudio);
-                    actionState.ChangeState(death);
+                    if (actionState.GetCurrentState() != death)
+                    {
+                        audioSource.PlayOneShot(deathAudio);
+                        actionState.ChangeState(death);
+                    }
+                }
+                else
+                {
+                    isInvulnerable = true;
+                    StartCoroutine("Fade");
+                    audioSource.PlayOneShot(takeHitAudio);
                 }
             }
-            else
+        }
+        else
+        {
+            if (actionState.GetCurrentState() != death)
             {
-                isInvulnerable = true;
-                StartCoroutine("Fade");
-                audioSource.PlayOneShot(takeHitAudio);
+                audioSource.PlayOneShot(deathAudio);
+                actionState.ChangeState(death);
             }
         }
     }
